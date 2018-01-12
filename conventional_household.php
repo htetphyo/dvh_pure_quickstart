@@ -37,9 +37,12 @@ $regions = $arr_data['myanmar'];
  */
 $district = array();
 $ayeay_url_base = $_api_url."api/dataset?reg=".$uri_data."&tb=A-7";
+
 $ayeayreturndata    =  Requests::get($ayeay_url_base, array('Accept' => 'application/json') );
 $ayeayarr_data  = json_decode( $ayeayreturndata->body , true);
-
+if($ayeayarr_data['error']){
+   die("Error Occure . Contact to administrator");
+}
 /**
  * Retrieve district data form dataset
  */

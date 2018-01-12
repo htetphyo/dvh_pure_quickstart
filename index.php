@@ -3,6 +3,8 @@ define("BASE_URL", "http://localhost/requests/");
 function base_url($file_path){
 	return BASE_URL.$file_path;
 }
+
+
 // First, include Requests
 include('./library/Requests.php');
 
@@ -16,7 +18,7 @@ $request = Requests::get('http://192.168.10.52/dvh_api/public/api/boundary/myanm
 $arr_data    = json_decode( $request->body , true);
 $regions = $arr_data['myanmar'];
 
-//Load Header 
+//Load Header
 include('./includes/header.php');
 ?>
 
@@ -281,7 +283,7 @@ function showArrays(event) {
 
 
 <?php
-// Load Footer 
+// Load Footer
 include('./includes/footer.php');
 
 ?>
