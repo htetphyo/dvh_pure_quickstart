@@ -132,6 +132,7 @@ var triangleCoords<?php echo $counter;?> = <?php  echo  json_encode($points, tru
     fillColor:"<?php echo  $color; ?>",
     fillOpacity: 0.35,
     text: '<?php echo $key ; ?>',
+     title: '<?php echo $key ; ?>'
   });
   bermudaTriangle.setMap(map);
 
@@ -140,6 +141,13 @@ var triangleCoords<?php echo $counter;?> = <?php  echo  json_encode($points, tru
   ?>
   // Add a listener for the click event.
   bermudaTriangle.addListener('click', me);
+  bermudaTriangle.addListener('mouseover', function(event){
+    console.log(this.text);
+    infoWindow.setContent(this.text);
+    infoWindow.setPosition(event.latLng);
+
+    infoWindow.open(map);
+  });
   <?php
 endforeach;
 ?>
@@ -148,6 +156,9 @@ endforeach;
 function me(){
 window.location.href = 'http://localhost/requests/conventional_household.php?reg='+this.text;
 }
+
+
+
 
 
 
