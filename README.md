@@ -1,1 +1,0 @@
-Sample Code for DVHack using pure php with  request and chatjs

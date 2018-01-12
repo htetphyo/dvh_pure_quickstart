@@ -62,7 +62,7 @@ html, body {
               <a class="nav-link js-scroll-trigger" href="<?= base_url('') ?>">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="<?= base_url("region.php?reg=ayeyarwaddy") ?>">regions</a>
+              <a class="nav-link js-scroll-trigger" href="<?= base_url("conventional_household.php?reg=ayeyawady") ?>">regions</a>
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>

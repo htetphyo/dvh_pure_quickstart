@@ -1,129 +1,68 @@
 <?php
-define("BASE_URL", "http://localhost/requests/");
-function base_url($file_path){
-	return BASE_URL.$file_path;
-}
+include('./config/region_lat_lng.php');
+
 // First, include Requests
 include('./library/Requests.php');
-
 // Next, make sure Requests can load internal classes
 Requests::register_autoloader();
 
-// Now let's make a request!
-// $request = Requests::get('http://192.168.10.52/dvh_api/public/api/boundary/myanmar', array('Accept' => 'application/json'));
-
-// // Check what we received
-// $arr_data    = json_decode( $request->body , true);
-// $regions = $arr_data['myanmar'];
-
+// get  reg parameter from query string
 $uri_data = $_GET['reg'];
 
-$point_arr =  array('ayeyarwaddy' =>  array(
-                          'lat' => 17.0265275 ,
-                          'lng' => 94.960546
-                        ),
-                    'bago' =>  array(
-                          'lat' => 18.0564065 ,
-                          'lng' => 95.7947285
-                        ),
-                    'chin' =>  array(
-                          'lat' => 22.1037994 ,
-                          'lng' => 93.0064834
-                        ),
-                    'kachin' =>  array(
-                        'lat' => 25.7044165 ,
-                        'lng' => 96.6468919
-                      ),
-                     'kayah' =>  array(
-                        'lat' => 19.2095643 ,
-                        'lng' => 97.2041616
-                      ),
-                     'kayin' =>  array(
-                        'lat' => 16.8461272 ,
-                        'lng' => 96.8309949
-                      ),
-                      'magway' =>  array(
-                        'lat' => 20.7068298 ,
-                        'lng' => 93.8928963
-                      ),
-                      'mon' =>  array(
-                          'lat' => 16.1572766 ,
-                          'lng' => 97.2589807
-                      ),
-                       'naypyitaw' =>  array(
-                          'lat' => 19.7423916 ,
-                          'lng' => 96.0703839
-                      ),
-                     'rakhine' =>  array(
-                        'lat' => 18.9844057 ,
-                        'lng' => 93.1280891
-                      ),
-                      'sagaing' =>  array(
-                          'lat' => 24.5614461 ,
-                          'lng' => 95.3634453
-                      ),
-                       'shan' =>  array(
-                        'lat' => 21.5907477 ,
-                        'lng' => 97.1029711
-                      ),
-                       'tanintharyi' =>  array(
-                        'lat' => 12.2736844 ,
-                        'lng' => 97.779519
-                      ),
-                    'yangon' =>  array(
-                          'lat' => 17.0038964 ,
-                          'lng' => 96.0002165
-                        ),
-                    'mandalay' =>  array(
-                          'lat' => 21.2621671 ,
-                          'lng' => 95.5755129
-                        )
-                  );
-    // $data['point_arr']  = $point_arr;
+// get region lat lng
+$point_arr = get_region();
 
-    // Get Boundary for each region 
-    $url_base =   "http://192.168.10.52/dvh_api/public/api/boundary?reg=".$uri_data;
-    $returndata    =  Requests::get($url_base , array('Accept' => 'application/json') );
-    
-    $arr_data  = json_decode( $returndata->body , true);
-    $points =  $arr_data[$uri_data];
-    // $data['points']=$points;
+// API Base URL
+$_api_url = api_url();
 
-    // var_dump($points);die();
+// using server API Data
+  //  // Get Boundary for each region
 
-  $district = array();
- 
-  //if($uri_data == $uri_data){
-    $ayeay_url_base =   "http://192.168.10.52/dvh_api/public/api/dataset?reg=".$uri_data."&tb=A-7";
-    $ayeayreturndata    =  Requests::get($ayeay_url_base, array('Accept' => 'application/json') );
-    $ayeayarr_data  = json_decode( $ayeayreturndata->body , true);
+  // $url_base =   $_api_url."api/boundary?reg=".$uri_data;
+  // $returndata    =  Requests::get($url_base , array('Accept' => 'application/json') );
+  //
+  // /**
+  //  *  Json decode from  return api data
+  //  */
+  // $arr_data  = json_decode( $returndata->body , true);
+  // $points =  $arr_data[$uri_data];
+// end of using
 
-    if(count($ayeayarr_data)>0){
-      foreach ($ayeayarr_data as $value) {
-         if($value['level'] == "district"){
-            $district[] = $value;
-         }
-      }
-    }
+// each boundary with local json file
+$arr_data =get_region_boundary($uri_data);
+$points = $arr_data[$uri_data];
 
-    // echo "<pre>";
-    // var_dump($district);
-    // echo "</pre>";
-    // die();
-  //}
 
-    // $data['district'] =  $district;
-    // echo "<pre>";
-    // var_dump($data);
-    // die();
+// all  boundary with local json file
+// $arr_data = myanmar();
+// $regions = $arr_data['myanmar'];
+// var_dump($regions);
+
+
+/**
+ *  Get dataset from API Server  and Decode
+ */
+$district = array();
+$ayeay_url_base = $_api_url."api/dataset?reg=".$uri_data."&tb=A-7";
+$ayeayreturndata    =  Requests::get($ayeay_url_base, array('Accept' => 'application/json') );
+$ayeayarr_data  = json_decode( $ayeayreturndata->body , true);
+
+/**
+ * Retrieve district data form dataset
+ */
+if(count($ayeayarr_data)>0){
+  foreach ($ayeayarr_data as $value) {
+     if($value['level'] == "district"){
+        $district[] = $value;
+     }
+  }
+}
 
 
 
-//Load Header 
+//Load Header
 include('./includes/header.php');
 ?>
-
- 
 
 <script src="<?= base_url('chartjs/dist/Chart.bundle.js') ?>"></script>
 <script src="<?= base_url('chartjs/samples/utils.js') ?>"></script>
@@ -134,9 +73,6 @@ canvas{
     -ms-user-select: none;
 }
 </style>
-
-
-
 
 <div  class="container">
   <div class="row">
@@ -149,7 +85,12 @@ canvas{
   </div>
 </div>
 
+<?php
+$uri_data = $_GET['reg'];
 
+$lat  =  isset($point_arr[$uri_data]['lat']) ? $point_arr[$uri_data]['lat'] : $point_arr['myanmar']['lat'] ;
+$lng =  isset($point_arr[$uri_data]['lng']) ? $point_arr[$uri_data]['lng'] :$point_arr['myanmar']['lng'] ;
+?>
 
 <!-- Replace the value of the key parameter with your own API key. -->
 <script async defer
@@ -257,30 +198,9 @@ if(count($district) > 0){
     $no9andmore  []   = $value['9_and_more'];
   }
 
-// echo "<pre>";
-// var_dump($district);
-// echo "<hr>";
-// var_dump($district_name);
-// var_dump($total);
-// var_dump($no1 );
-// var_dump($no2 );
-// var_dump($no3 );
-// var_dump($no4 );
-// var_dump($no5 );
-// var_dump($no6 );
-// var_dump($no7 );
-// var_dump($no8 );
-// var_dump($no9andmore );
-// die();
-
  ?>
 
 <script>
-
-
-
-
-
     var MONTHS = <?php  echo  json_encode($district_name, true);    ?> ;
     var config = {
         type: 'line',
@@ -401,9 +321,7 @@ if(count($district) > 0){
             dataset.data = dataset.data.map(function() {
                 return randomScalingFactor();
             });
-
         });
-
         window.myLine.update();
     });
 
@@ -435,7 +353,6 @@ if(count($district) > 0){
             config.data.datasets.forEach(function(dataset) {
                 dataset.data.push(randomScalingFactor());
             });
-
             window.myLine.update();
         }
     });
@@ -451,28 +368,24 @@ if(count($district) > 0){
         config.data.datasets.forEach(function(dataset, datasetIndex) {
             dataset.data.pop();
         });
-
         window.myLine.update();
     });
 </script>
 
 <?php
-
 }
+?>
 
 
- ?>
 
 
-
- 
 
 
 
 
 
 <?php
-// Load Footer 
+// Load Footer
 include('./includes/footer.php');
 
 ?>
