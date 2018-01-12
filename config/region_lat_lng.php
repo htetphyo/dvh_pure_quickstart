@@ -1,5 +1,5 @@
 <?php
-define("BASE_URL", "http://localhost/requests/");
+define("BASE_URL", "http://localhost/dvh_pure_quickstart/");
 define("API_URL","http://api.datavisualizationhackathon.org/");
 
 function base_url($file_path){

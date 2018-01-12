@@ -161,10 +161,6 @@ window.location.href = 'http://localhost/requests/conventional_household.php?reg
 }
 
 
-
-
-
-
 /** @this {google.maps.Polygon} */
 function showArrays(event) {
   // Since this polygon has only one path, we can call getPath() to return the

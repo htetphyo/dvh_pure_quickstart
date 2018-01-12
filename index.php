@@ -1,9 +1,5 @@
 <?php
-define("BASE_URL", "http://localhost/requests/");
-function base_url($file_path){
-	return BASE_URL.$file_path;
-}
-
+include('./config/region_lat_lng.php');
 
 // First, include Requests
 include('./library/Requests.php');
@@ -11,8 +7,11 @@ include('./library/Requests.php');
 // Next, make sure Requests can load internal classes
 Requests::register_autoloader();
 
+$_api_url = api_url();
+
+
 // Now let's make a request!
-$request = Requests::get('http://192.168.10.52/dvh_api/public/api/boundary/myanmar', array('Accept' => 'application/json'));
+$request = Requests::get($_api_url."/api/boundary/myanmar", array('Accept' => 'application/json'));
 
 // Check what we received
 $arr_data    = json_decode( $request->body , true);
@@ -241,44 +240,28 @@ var triangleCoords<?php echo $counter;?> = <?php  echo  json_encode($points, tru
     strokeOpacity: 0.8,
     strokeWeight: 2,
     fillColor: '#FF0000',
-    fillOpacity: 0.35
+    fillOpacity: 0.35,
+	  text: '<?php echo $key ; ?>',
+    title: '<?php echo $key ; ?>'
   });
   bermudaTriangle.setMap(map);
 
-  // Add a listener for the click event.
-  bermudaTriangle.addListener('click', showArrays);
+	<?php
+	  endforeach;
+	  ?>
+	  // Add a listener for the click event.
+			bermudaTriangle.addListener('mouseover', function(event){
+	    console.log(this.text);
+	    infoWindow.setContent(this.text);
+	    infoWindow.setPosition(event.latLng);
 
-<?php
-  endforeach;
-endforeach;
-?>
+	    infoWindow.open(map);
+	  });
+	  <?php
+	endforeach;
+	?>
   infoWindow = new google.maps.InfoWindow;
 }
-
-/** @this {google.maps.Polygon} */
-function showArrays(event) {
-  // Since this polygon has only one path, we can call getPath() to return the
-  // MVCArray of LatLngs.
-  var vertices = this.getPath();
-
-  var contentString = '<b>Bermuda Triangle polygon</b><br>' +
-      'Clicked location: <br>' + event.latLng.lat() + ',' + event.latLng.lng() +
-      '<br>';
-
-  // Iterate over the vertices.
-  for (var i =0; i < vertices.getLength(); i++) {
-    var xy = vertices.getAt(i);
-    contentString += '<br>' + 'Coordinate ' + i + ':<br>' + xy.lat() + ',' +
-        xy.lng();
-  }
-
-  // Replace the info window's content and position.
-  infoWindow.setContent(contentString);
-  infoWindow.setPosition(event.latLng);
-
-  infoWindow.open(map);
-}
-
 </script>
 
 
