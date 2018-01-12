@@ -2,7 +2,7 @@
 define("BASE_URL", "http://localhost/dvh_pure_quickstart/");
 define("API_URL","http://api.datavisualizationhackathon.org/");
 
-function base_url($file_path){
+function base_url($file_path = ""){
 	return BASE_URL.$file_path;
 }
 function api_url(){

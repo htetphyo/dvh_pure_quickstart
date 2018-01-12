@@ -157,7 +157,7 @@ endforeach;
   infoWindow = new google.maps.InfoWindow;
 }
 function me(){
-window.location.href = 'http://localhost/requests/conventional_household.php?reg='+this.text;
+window.location.href = '<?php echo BASE_URL ?>conventional_household.php?reg='+this.text;
 }
 
 
